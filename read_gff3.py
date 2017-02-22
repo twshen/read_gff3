@@ -16,36 +16,23 @@ parser.add_argument("-o", "--output", metavar="output.file", dest="foutput",
 args = parser.parse_args()
 
 def main(argv):
-    oID = re.compile(r"ID=(\w+)")
-    oName = re.compile(r"Name=([()-\.\w]+)")
-    oBiotype = re.compile(r"biotype=(\w+)")
-    #oDescription = re.compile(r"description=([-()%\.\s\w]+) \[")
-    oDescription = re.compile(r"description=(.+) \[")
-    sID = oID.search("") 
-    sName = oName.search("")
-    sBiotype = oBiotype.search("")
-    sDescription = oDescription.search("")
+    #oID = re.compile(r"ID=(\w+)")
+    oParent = re.compile(r"Parent=(\w+)")
+    oProduct = re.compile(r"product=([-:()%\.\s\w]+)")
+    #sID = oID.search("") 
+    sParent = oParent.search("")
+    sProduct = oProduct.search("")
     ID2Info= {}
 
     IN = open(args.fgtf, "r")
     for line in IN:
-        sID = oID.search(line) 
-        if sID:
-            sName = oName.search(line)
-            sBiotype = oBiotype.search(line)
-            sDescription = oDescription.search(line)
-            if sName:
-                ID2Info[sID.group(1)] = sName.group(1)
+        sParent = oParent.search(line) 
+        if sParent:
+            sProduct = oProduct.search(line[0:-1])
+            if sProduct:
+                ID2Info[sParent.group(1)] = sProduct.group(1)
             else:
-                ID2Info[sID.group(1)] = ""
-            if sBiotype:
-                ID2Info[sID.group(1)] += "\t" + sBiotype.group(1)
-            else:
-                ID2Info[sID.group(1)] += "\t" 
-            if sDescription:
-                ID2Info[sID.group(1)] += "\t" + sDescription.group(1)
-            else:
-                ID2Info[sID.group(1)] += "\t"
+                ID2Info[sParent.group(1)] = ""
         else:
             continue
     IN.close()
@@ -53,7 +40,8 @@ def main(argv):
     IN = open(args.finput, "r")
     OUT = open(args.foutput, "w")
     header = IN.readline()
-    OUT.write("gene id" + header[0:-1] + "\tgene name\tbiotype\tdescription\n")
+    #OUT.write("gene id" + header[0:-1] + "\tgene name\tbiotype\tdescription\n")
+    OUT.write(header[0:-1] + "\tproduct\n")
     for line in IN:
         columns = line.split("\t")
         if columns[0] in ID2Info:
