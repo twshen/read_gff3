@@ -1,0 +1,5 @@
+1. parse a gff3 file and retrive gene info based on the gene id
+2. append gene info to the input list based on the gene id
+
+The complete gff3 file of Aedes aegypti can be downloaded from
+https://www.vectorbase.org/download/aedes-aegypti-liverpoolbasefeaturesaaegl33gff3gz
